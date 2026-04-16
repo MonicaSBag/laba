@@ -2,7 +2,8 @@ package com.solvd.project.service;
 
 import com.solvd.project.enums.ContructionType;
 import com.solvd.project.enums.MaterialType;
-import com.solvd.project.enums.PorjectStatus;
+import com.solvd.project.enums.ProjectStatus;
+import com.solvd.project.models.HouseProject;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -19,11 +20,11 @@ public class ReportService {
         int totalProject = 0;
 
         Map<ContructionType, Integer> typeCount = new HashMap<>();
-        Map<PorjectStatus, Integer> statusCount = new HashMap<>();
+        Map<ProjectStatus, Integer> statusCount = new HashMap<>();
         Map<MaterialType, Integer> materialCount = new HashMap<>();
 
         for (ContructionType type : ContructionType.values()) {typeCount.put(type, 0);}
-        for (PorjectStatus status : PorjectStatus.values()) {statusCount.put(status, 0);}
+        for (ProjectStatus status : ProjectStatus.values()) {statusCount.put(status, 0);}
         for (MaterialType type : MaterialType.values()) {materialCount.put(type, 0);}
 
         for (String line : content) {
@@ -35,7 +36,7 @@ public class ReportService {
                     typeCount.put(type,typeCount.get(type)+1);
                 }
             }
-            for(PorjectStatus status : PorjectStatus.values()){
+            for(ProjectStatus status : ProjectStatus.values()){
                 if (StringUtils.containsIgnoreCase(line, status.name())){
                     statusCount.put(status,statusCount.get(status)+1);
                 }
@@ -54,13 +55,19 @@ public class ReportService {
             report.append("- ").append(type.name()).append(": ").append(typeCount.get(type)).append("\n");
         }
         report.append("By project status:\n");
-        for  (PorjectStatus status : PorjectStatus.values()) {
+        for  (ProjectStatus status : ProjectStatus.values()) {
             report.append("- ").append(status.name()).append(": ").append(statusCount.get(status)).append("\n");
         }
         report.append("By material quality:\n");
         for  (MaterialType type : MaterialType.values()) {
             report.append("- ").append(type.name()).append(": ").append(materialCount.get(type)).append("\n");
         }
-        FileUtils.writeStringToFile(output, report.toString(), StandardCharsets.UTF_8, true);
+        FileUtils.writeStringToFile(output, report.toString(), StandardCharsets.UTF_8, false);
+    }
+
+    public void saveNewProject(HouseProject project, File input) throws Exception{
+        String new_line = project.generateReport();
+        FileUtils.writeStringToFile(input, new_line + System.lineSeparator() + "----------------\n", StandardCharsets.UTF_8, true);
+
     }
 }

@@ -8,6 +8,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
+import static com.solvd.project.enums.ContructionType.*;
+import static com.solvd.project.enums.MaterialType.*;
+import static com.solvd.project.enums.ProjectStatus.*;
+
+
 class Main {
     public static void main(String[] args){
     final Logger logger = LogManager.getLogger(Main.class);
@@ -27,29 +32,32 @@ class Main {
 
     Crew crew = new Crew(arquitect, siteManager, handyman);
 
-    CollectionService newCollectionService = new CollectionService();
-    newCollectionService.demoCollections(client, supplier, crew);
-
     HouseProject project = new HouseProject(
             200,
-            "high",
+            HIGH,
             client,
             supplier,
-            crew
+            crew,
+            CABIN,
+            PLANNED
     );
 
     if (!project.isValid()) {
         logger.error("Invalid Project");
         return;
     }
+        ReportService reportService = new ReportService();
+        try {
+            reportService.saveNewProject(
+                    project,
+                    new File("src/main/resources/input.txt")
+            );
+        } catch (Exception e) {
+            logger.error("Error while saving project", e);
+        }
 
-    GenericContainer<HouseProject> projectContainer = new GenericContainer<>(project);
+        logger.info("Project saved!");
 
-    Repository<HouseProject> projectRepository = new Repository<>();
-    projectRepository.add(projectContainer.getValue());
-
-    logger.info(projectContainer.getValue().generateReport());
-    logger.info("Projects in repo: " + projectRepository.getList());
     }
 }
 

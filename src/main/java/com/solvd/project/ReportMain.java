@@ -9,7 +9,7 @@ public class ReportMain {
         ReportService service = new ReportService();
         service.analyzeReport(
                 new File("src/main/resources/input.txt"),
-                new File("src/main/resources/results.txt")
+                new File("src/main/resources/report.txt")
         );
     }
 }

@@ -1,6 +1,8 @@
 package com.solvd.project;
 
 
+import com.solvd.project.models.CostEstimator;
+import com.solvd.project.models.StatusChecker;
 import com.solvd.project.models.*;
 import com.solvd.project.service.*;
 import org.apache.logging.log4j.LogManager;
@@ -33,14 +35,30 @@ class Main {
     Crew crew = new Crew(arquitect, siteManager, handyman);
 
     HouseProject project = new HouseProject(
-            200,
-            HIGH,
+            2000,
+            MEDIUM,
             client,
             supplier,
             crew,
-            CABIN,
-            PLANNED
+            HOUSE,
+            COMPLETED
     );
+
+    MaterialQuality materialQuality = new MaterialQuality(project.getMaterialQuality());
+    CostEstimator quickCalc = (p,q) -> p.getSquareMeters() * q.getPrice();
+    double estimate =  quickCalc.estimate(project, materialQuality);
+    logger.info("Total estimate: " + String.format("%,d", (int) estimate));
+
+    StatusChecker checker = p -> p.estimateTime() > 10
+            ? "Long project: " + p.estimateTime() + " weeks"
+            : "Short project: " + p.estimateTime() + " weeks";
+    logger.info(checker.check(project));
+
+    ProjectSummarizer shortSummary = p ->
+            "Project: " + p.getSquareMeters() + "m2 | " +
+            "Quality: " + p.getMaterialQuality() + " | " +
+            "Time: " + p.estimateTime() + " weeks";
+    logger.info(shortSummary.summarize(project));
 
     if (!project.isValid()) {
         logger.error("Invalid Project");

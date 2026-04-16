@@ -7,15 +7,36 @@ Supplier contact info
 - Supplier Phone number: 6566560
 - Supplier Email: construction@gmail.com
 Person in charge: [Luisa Lopez-Architect, Victor Brandam-Site Manager]
-Contruction Type: CABIN
-Material quality: HIGH
+Contruction Type: HOUSE
+Material quality: MEDIUM
 Material price per m2: 200000
-Square meters: 200
+Square meters: 2000
 Task: [Kitchen complete remodeling, New pool project, Entire Floor, Entire Roof]
-Estimated time: 10 weeks
+Estimated time: 100 weeks
 Total Budget
-Material Cost: 40,000,000
-Labor Cost: 7,920,000
-Total cost: 40,792,000
-Project status: PLANNED
+Material Cost: 400,000,000
+Labor Cost: 79,200,000
+Total cost: 400,792,000
+Project status: COMPLETED
+----------------
+Project Details:
+Client Info 
+- Client Name: Monica Cliente
+- Client Rut: 698-25825-548
+Supplier contact info
+- Supplier Name : Material for Construction S.R.L
+- Supplier Phone number: 6566560
+- Supplier Email: construction@gmail.com
+Person in charge: [Luisa Lopez-Architect, Victor Brandam-Site Manager]
+Contruction Type: HOUSE
+Material quality: MEDIUM
+Material price per m2: 200000
+Square meters: 2000
+Task: [Kitchen complete remodeling, New pool project, Entire Floor, Entire Roof]
+Estimated time: 100 weeks
+Total Budget
+Material Cost: 400,000,000
+Labor Cost: 79,200,000
+Total cost: 400,792,000
+Project status: COMPLETED
 ----------------

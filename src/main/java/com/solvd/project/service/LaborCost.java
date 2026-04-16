@@ -4,6 +4,9 @@ import com.solvd.project.models.Crew;
 import com.solvd.project.models.People;
 import com.solvd.project.models.Reportable;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 public class LaborCost
     implements CostCalculable, Reportable {
 
@@ -16,12 +19,12 @@ public class LaborCost
 
     @Override
     public double calcTotal(){
-        double total = 0;
-        total += crew.getArchitect().getHourlyWage() * 8 * 6;
-        total += crew.getSiteManager().getHourlyWage() * 8 * 6;
-        for(People p : crew.getHandyman()){
-            total += p.getHourlyWage() * 8 * 6;
-        }
+        double total = Stream.concat(
+                        Stream.of(crew.getArchitect(), crew.getSiteManager()),
+                        Arrays.stream(crew.getHandyman())
+                )
+                .mapToDouble(p -> p.getHourlyWage() * 8 * 6)
+                .sum();
         this.weeklyCost = total;
         return total;
     }

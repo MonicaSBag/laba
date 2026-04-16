@@ -9,59 +9,60 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ReportService {
+
     public void analyzeReport(File input, File output) throws Exception{
         List<String> content = FileUtils.readLines( input, StandardCharsets.UTF_8);
-
-        int totalProject = 0;
 
         Map<ContructionType, Integer> typeCount = new HashMap<>();
         Map<ProjectStatus, Integer> statusCount = new HashMap<>();
         Map<MaterialType, Integer> materialCount = new HashMap<>();
 
-        for (ContructionType type : ContructionType.values()) {typeCount.put(type, 0);}
-        for (ProjectStatus status : ProjectStatus.values()) {statusCount.put(status, 0);}
-        for (MaterialType type : MaterialType.values()) {materialCount.put(type, 0);}
+        List<String> nonBlankLines = content.stream()
+                .filter(line -> !StringUtils.isBlank(line))
+                .collect(Collectors.toList());
 
-        for (String line : content) {
-            if (StringUtils.isBlank(line)) continue;
-            totalProject++;
+        int totalProject = (int) nonBlankLines.stream()
+                .filter(line -> line.contains("----------------"))
+                .count();
 
-            for(ContructionType type : ContructionType.values()){
-                if (StringUtils.containsIgnoreCase(line, type.name())){
-                    typeCount.put(type,typeCount.get(type)+1);
-                }
-            }
-            for(ProjectStatus status : ProjectStatus.values()){
-                if (StringUtils.containsIgnoreCase(line, status.name())){
-                    statusCount.put(status,statusCount.get(status)+1);
-                }
-            }
-            for(MaterialType type : MaterialType.values()){
-                if (StringUtils.containsIgnoreCase(line, type.name())){
-                    materialCount.put(type,materialCount.get(type)+1);
-                }
-            }
-        }
+        nonBlankLines.forEach(line -> {
+            Arrays.stream(ContructionType.values())
+                    .filter(type -> StringUtils.containsIgnoreCase(line, type.name()))
+                    .forEach(type -> typeCount.merge(type, 1, Integer::sum));
+
+            Arrays.stream(ProjectStatus.values())
+                    .filter(status -> StringUtils.containsIgnoreCase(line, status.name()))
+                    .forEach(status -> statusCount.merge(status, 1, Integer::sum));
+
+            Arrays.stream(MaterialType.values())
+                    .filter(type -> StringUtils.containsIgnoreCase(line, type.name()))
+                    .forEach(type -> materialCount.merge(type, 1, Integer::sum));
+        });
 
         StringBuilder report = new StringBuilder();
         report.append("Total project number: ").append(totalProject).append("\n");
         report.append("By contruction type:\n");
-        for  (ContructionType type : ContructionType.values()) {
-            report.append("- ").append(type.name()).append(": ").append(typeCount.get(type)).append("\n");
-        }
+        Arrays.stream(ContructionType.values())
+                .forEach(type -> report.append("- ")
+                        .append(type.name()).append(": ")
+                        .append(typeCount.getOrDefault(type, 0)).append("\n"));
         report.append("By project status:\n");
-        for  (ProjectStatus status : ProjectStatus.values()) {
-            report.append("- ").append(status.name()).append(": ").append(statusCount.get(status)).append("\n");
-        }
+        Arrays.stream(ProjectStatus.values())
+                .forEach(status -> report.append("- ")
+                        .append(status.name()).append(": ")
+                        .append(statusCount.getOrDefault(status, 0)).append("\n"));
         report.append("By material quality:\n");
-        for  (MaterialType type : MaterialType.values()) {
-            report.append("- ").append(type.name()).append(": ").append(materialCount.get(type)).append("\n");
-        }
+        Arrays.stream(MaterialType.values())
+                .forEach(type -> report.append("- ")
+                        .append(type.name()).append(": ")
+                        .append(materialCount.getOrDefault(type, 0)).append("\n"));
         FileUtils.writeStringToFile(output, report.toString(), StandardCharsets.UTF_8, false);
     }
 

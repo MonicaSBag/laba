@@ -1,5 +1,7 @@
 package com.solvd.project.models;
 
+import java.util.Arrays;
+
 public class Crew extends CrewBase{
     People architect;
     People siteManager;
@@ -44,10 +46,10 @@ public class Crew extends CrewBase{
         string.append("Architect: ").append(architect).append("\n");
         string.append("Site Manager: ").append(siteManager).append("\n");
         string.append("Handymen:\n");
-        if(handyman!=null){
-            for(People i : handyman) {
-                string.append("-").append(i).append("\n");
-            }
+        if(handyman != null){
+            Arrays.stream(handyman)
+                    .map(i -> "-" + i + "\n")
+                    .forEach(string::append);
         }
         return string.toString();
     }

@@ -11,5 +11,6 @@ public class ReportMain {
                 new File("src/main/resources/input.txt"),
                 new File("src/main/resources/report.txt")
         );
+
     }
 }

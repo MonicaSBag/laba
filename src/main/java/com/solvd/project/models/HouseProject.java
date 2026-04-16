@@ -14,6 +14,8 @@ import com.solvd.project.enums.ContructionType;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class HouseProject extends ProjectBase
     implements Reportable, Validatable, CalculableTime {
@@ -77,9 +79,9 @@ public class HouseProject extends ProjectBase
         MaterialQuality mq = new MaterialQuality("high");
         int price = mq.getPrice();
 
-        List<String> workers = new ArrayList<>();
-        workers.add(crew.getArchitect().getName() +"-"+ crew.getArchitect().getRole());
-        workers.add(crew.getSiteManager().getName() +"-"+ crew.getSiteManager().getRole());
+        List<String> workers = Stream.of(crew.getArchitect(), crew.getSiteManager())
+                .map(p -> p.getName() + "-" + p.getRole())
+                .collect(Collectors.toList());;
 
         List<String> tasks = new LinkedList<>();
         tasks.add("Kitchen complete remodeling");
